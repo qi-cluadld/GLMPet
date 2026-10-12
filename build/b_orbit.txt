@@ -27,21 +27,22 @@ Initialize-Blossom
 $script:Orbit = New-Object System.Collections.ArrayList
 # 智谱清言图标 = 两个交叠的蓝色圆环; 画在星芒层(身体/脸的后面), 各自带不同倾角
 function New-EllipseRing {
-    param([double]$CX = 120, [double]$CY = 122, [double]$Ro = 78, [double]$Ri = 64, [double]$Squash = 0.92)
+    param([double]$CX = 120, [double]$CY = 122, [double]$Ro = 78, [double]$Ri = 64, [double]$Squash = 0.95)
     $roY = $Ro * $Squash; $riY = $Ri * $Squash
     return ('M {0:0.##},{1:0.##} A {2:0.##},{3:0.##} 0 1 0 {4:0.##},{1:0.##} A {2:0.##},{3:0.##} 0 1 0 {5:0.##},{1:0.##} Z M {6:0.##},{1:0.##} A {7:0.##},{8:0.##} 0 1 0 {9:0.##},{1:0.##} A {7:0.##},{8:0.##} 0 1 0 {10:0.##},{1:0.##} Z' -f ($CX - $Ro), $CY, $Ro, $roY, ($CX + $Ro), ($CX - $Ro), ($CX - $Ri), $Ri, $riY, ($CX + $Ri), ($CX - $Ri))
 }
 function Initialize-Orbit {
+    # 两环在左侧 (46,128) 交成一个尖角: 圆心分别落在右上方 / 右下方, 各自反向倾斜
     $specs = @(
-        @{ Rot = -18; C1 = '#FF2B4BF2'; C2 = '#FF1F3AD6' },
-        @{ Rot = 26;  C1 = '#B33B5BFE'; C2 = '#B34B6BFF' }
+        @{ CX = 97; CY = 92;  Rot = 20;  Ro = 64; Ri = 50; C1 = '#FF2B4BF2'; C2 = '#FF1F3AD6' },
+        @{ CX = 97; CY = 164; Rot = -20; Ro = 64; Ri = 50; C1 = '#B33B5BFE'; C2 = '#B34B6BFF' }
     )
     foreach ($sp in $specs) {
         $p = New-Object System.Windows.Shapes.Path
-        $p.Data = [System.Windows.Media.Geometry]::Parse((New-EllipseRing))
+        $p.Data = [System.Windows.Media.Geometry]::Parse((New-EllipseRing -CX $sp.CX -CY $sp.CY -Ro $sp.Ro -Ri $sp.Ri))
         $p.Fill = New-LinBrush -colors @($sp.C1, $sp.C2) -offsets @(0, 1)
         $p.RenderTransformOrigin = New-Object System.Windows.Point(0.5, 0.5)
-        $p.RenderTransform = New-Object System.Windows.Media.RotateTransform($sp.Rot, 120, 122)
+        $p.RenderTransform = New-Object System.Windows.Media.RotateTransform($sp.Rot, $sp.CX, $sp.CY)
         $p.IsHitTestVisible = $false
         [void]$BlossomLayer.Children.Add($p)
     }
