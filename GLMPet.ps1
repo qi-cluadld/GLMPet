@@ -432,7 +432,8 @@ function Initialize-Orbit {
     $trunk.IsHitTestVisible = $false
     [void]$OrbitLayer.Children.Add($trunk)
 }
-Initialize-Orbit$script:Particles = New-Object System.Collections.ArrayList
+Initialize-Orbit
+$script:Particles = New-Object System.Collections.ArrayList
 
 function New-Particle {
     param(
