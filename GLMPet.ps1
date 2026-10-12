@@ -173,7 +173,7 @@ function New-SquircleData {
     return $sb.ToString()
 }
 # 身体 = 蓝色圆角方块(占据窗口大部分)
-$script:BodyData = New-SquircleData -CX 118 -CY 120 -Size 148 -R 56 -Rot 0
+$script:BodyData = New-SquircleData -CX 120 -CY 122 -Size 118 -R 59 -Rot 0
 # 星芒(6 片):圆角长条,围着核心转一圈
 $script:ArmLen = 58.0
 $script:ArmThick = 17.0
@@ -416,8 +416,28 @@ function Initialize-Blossom {
 Initialize-Blossom
 # 身边飘的三颗小闪光
 $script:Orbit = New-Object System.Collections.ArrayList
-# GLM 图标 = 蓝色圆环 + 里面的白象; 圆环和象鼻画在闪光层(这一层在身体前面)
+# 智谱清言图标 = 两个交叠的蓝色圆环; 画在闪光层(身体前面), 各自带不同倾角
+function New-EllipseRing {
+    param([double]$CX = 120, [double]$CY = 122, [double]$Ro = 78, [double]$Ri = 64, [double]$Squash = 0.74)
+    $roY = $Ro * $Squash; $riY = $Ri * $Squash
+    return ('M {0:0.##},{1:0.##} A {2:0.##},{3:0.##} 0 1 0 {4:0.##},{1:0.##} A {2:0.##},{3:0.##} 0 1 0 {5:0.##},{1:0.##} Z M {6:0.##},{1:0.##} A {7:0.##},{8:0.##} 0 1 0 {9:0.##},{1:0.##} A {7:0.##},{8:0.##} 0 1 0 {10:0.##},{1:0.##} Z' -f ($CX - $Ro), $CY, $Ro, $roY, ($CX + $Ro), ($CX - $Ro), ($CX - $Ri), $Ri, $riY, ($CX + $Ri), ($CX - $Ri))
+}
 function Initialize-Orbit {
+    $specs = @(
+        @{ Rot = -18; C1 = '#FF2B4BF2'; C2 = '#FF1F3AD6' },
+        @{ Rot = 26;  C1 = '#B33B5BFE'; C2 = '#B34B6BFF' }
+    )
+    foreach ($sp in $specs) {
+        $p = New-Object System.Windows.Shapes.Path
+        $p.Data = [System.Windows.Media.Geometry]::Parse((New-EllipseRing))
+        $p.Fill = New-LinBrush -colors @($sp.C1, $sp.C2) -offsets @(0, 1)
+        $p.RenderTransformOrigin = New-Object System.Windows.Point(0.5, 0.5)
+        $p.RenderTransform = New-Object System.Windows.Media.RotateTransform($sp.Rot, 120, 122)
+        $p.IsHitTestVisible = $false
+        [void]$OrbitLayer.Children.Add($p)
+    }
+}
+Initialize-Orbit {
     # 蓝圆环(外 108 / 内 92, EvenOdd 自动成环)
     $ring = New-Object System.Windows.Shapes.Path
     $d = 'M 12,122 A 108,108 0 1 0 228,122 A 108,108 0 1 0 12,122 Z M 28,122 A 92,92 0 1 0 212,122 A 92,92 0 1 0 28,122 Z'
