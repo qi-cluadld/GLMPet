@@ -70,7 +70,7 @@ function New-SquircleData {
     return $sb.ToString()
 }
 # 身体 = 蓝色圆角方块(占据窗口大部分)
-$script:BodyData = New-SquircleData -CX 120 -CY 122 -Size 118 -R 59 -Rot 0
+$script:BodyData = New-SquircleData -CX 120 -CY 122 -Size 124 -R 62 -Rot 0
 # 星芒(6 片):圆角长条,围着核心转一圈
 $script:ArmLen = 58.0
 $script:ArmThick = 17.0
