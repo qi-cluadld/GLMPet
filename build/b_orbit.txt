@@ -1,0 +1,44 @@
+# 统一的陶土橙渐变(绝对坐标, 让 12 片星芒共用同一束光)
+# 三个白色旋转块(用同一个方块生成器): 一块在上, 两块在下
+function New-MarkBrush {
+    $b = New-Object System.Windows.Media.LinearGradientBrush
+    $b.StartPoint = New-Object System.Windows.Point(0, 0)
+    $b.EndPoint = New-Object System.Windows.Point(0.6, 1)
+    [void]$b.GradientStops.Add((New-Gs '#FFFFFFFF' 0))
+    [void]$b.GradientStops.Add((New-Gs '#FFEDF2FF' 1))
+    return $b
+}
+function Initialize-Blossom {
+    $angles = @(270, 30, 150)
+    $rotd = @(-18, 22, -6)
+    for ($i = 0; $i -lt 3; $i++) {
+        $a = $angles[$i] * [Math]::PI / 180.0
+        $px = 120 + [Math]::Cos($a) * 62
+        $py = 122 + [Math]::Sin($a) * 62
+        $p = New-Object System.Windows.Shapes.Path
+        $p.Data = [System.Windows.Media.Geometry]::Parse((New-SquircleData -CX $px -CY $py -Size 42 -R 13 -Rot $rotd[$i]))
+        $p.Fill = New-MarkBrush
+        $p.IsHitTestVisible = $false
+        [void]$BlossomLayer.Children.Add($p)
+    }
+}
+Initialize-Blossom
+# 身边飘的三颗小闪光
+$script:Orbit = New-Object System.Collections.ArrayList
+# GLM 图标 = 蓝色圆环 + 里面的白象; 圆环和象鼻画在闪光层(这一层在身体前面)
+function Initialize-Orbit {
+    # 蓝圆环(外 108 / 内 92, EvenOdd 自动成环)
+    $ring = New-Object System.Windows.Shapes.Path
+    $d = 'M 12,122 A 108,108 0 1 0 228,122 A 108,108 0 1 0 12,122 Z M 28,122 A 92,92 0 1 0 212,122 A 92,92 0 1 0 28,122 Z'
+    $ring.Data = [System.Windows.Media.Geometry]::Parse($d)
+    $ring.Fill = New-LinBrush -colors @('#FF3D5AFE', '#FF2B4BE0') -offsets @(0, 1)
+    $ring.IsHitTestVisible = $false
+    [void]$OrbitLayer.Children.Add($ring)
+    # 白象鼻(压过圆环右下, 和图标里的象鼻一样白)
+    $trunk = New-Object System.Windows.Shapes.Path
+    $trunk.Data = [System.Windows.Media.Geometry]::Parse('M 158,138 C 184,148 198,170 198,194 C 198,206 189,213 179,209 C 171,205 169,195 171,185 C 173,169 165,155 150,149 Z')
+    $trunk.Fill = New-LinBrush -colors @('#FFFFFFFF', '#FFF2F5FF') -offsets @(0, 1)
+    $trunk.IsHitTestVisible = $false
+    [void]$OrbitLayer.Children.Add($trunk)
+}
+Initialize-Orbit
