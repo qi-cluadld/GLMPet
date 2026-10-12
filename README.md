@@ -1,4 +1,7 @@
-﻿# 智谱 GLM 桌面小宠物 🐘
+# 智谱 GLM 桌面小宠物 🐘
+
+> 📦 **免安装下载**：[Releases](https://github.com/qi-cluadld/GLMPet/releases/latest) 下载 zip，解压后双击 `启动宠物.vbs` 即可（不用 clone、不用装任何运行库）。
+
 
 一只趴在你桌面上的 **GLM（智谱清言）小象**：蓝色圆环 + 白色小象，会浮动、眨眼、转圈、思考、睡着，点它有反应，并和桌面上其它 AI 宠物（Gemini ✨ / DeepSeek 🐋 / ChatGPT ✦ / Claude ☀ / 豆包 🥟 / Qwen 🌀 / Copilot 🚀）互相打招呼、聊天、送爱心、吵架再和好。
 
